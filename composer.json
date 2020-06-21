@@ -1,0 +1,16 @@
+{
+    "name": "ttiantianle/sync-zwc",
+    "description": "data sync",
+    "authors": [
+        {
+            "name": "ttiantianle",
+            "email": "ttiantianle@163.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "ttiantianle\\sync\\": "src/"
+        }
+    }
+}
