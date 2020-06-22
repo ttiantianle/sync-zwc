@@ -25,23 +25,27 @@ class Sync{
     }
 
     public function addOneToNewDataBase($table='',$oldData=[],$keyMap=[],$primary=[]){
+        if ($this->link===null){
+            return Code::UNLINK;
+        }
         $data = Tools::arrayExtract($oldData,$keyMap);
         $where ='';
         foreach ($primary as $v){
             $where .= " ".$v."='".$data[$v]."' and";
         }
         $where = substr($where,0,-3);
-        $query = $this->link->query_result();
+        $query = $this->link->query_result("select 1 from ".$table.' where '.$where);
         if ($query){
-            return 1;
+            return Code::HADEXISTS;
+        }else{
+            $res = $this->link->insert($data,$table);
+            if ($res){
+                return Code::SUCCESS;
+            }else{
+                return Code::SYNCERROR;
+            }
         }
     }
-
-
-
-
-
-
 
     private function validateDbConfig($dbConfig=[]){
       if (!is_array($dbConfig)) return false;
