@@ -59,7 +59,7 @@ class Mysql7
 
 
         if (!$this->link_id) {
-            $this->log("connet db failed", true);
+//            $this->log("connet db failed", true);
             $this->errno = @mysqli_connect_errno();
             $this->error = @mysqli_connect_error();
             throw new Exception($this->error, $this->errno);
@@ -68,7 +68,7 @@ class Mysql7
         $qid = @mysqli_query($this->link_id,"set names ".$this->dbconfig['dbcharset']);
 
         if (!$qid) {
-            $this->log("set names failed", true);
+//            $this->log("set names failed", true);
             $this->errno = @mysqli_errno($this->link_id);
             $this->error = @mysqli_error($this->link_id);
             throw new Exception($this->error, $this->errno);
@@ -77,7 +77,7 @@ class Mysql7
             $ret = @mysqli_select_db( $this->link_id,$this->dbconfig['dbname']);
 
             if (!$ret) {
-                $this->log("mysqli_select_db failed,db name:{$this->dbconfig['dbname']}", true);
+//                $this->log("mysqli_select_db failed,db name:{$this->dbconfig['dbname']}", true);
                 $this->errno = @mysqli_errno($this->link_id);
                 $this->error = @mysqli_error($this->link_id);
                 throw new Exception($this->error, $this->errno);
@@ -92,7 +92,7 @@ class Mysql7
         $this->dbconfig['dbname'] = $dbname;
         $ret = @mysqli_select_db( $this->link_id,$this->dbconfig['dbname']);
         if (!$ret) {
-            $this->log("mysqli_select_db failed,db name:{$this->dbconfig['dbname']}", true);
+//            $this->log("mysqli_select_db failed,db name:{$this->dbconfig['dbname']}", true);
             $this->errno = @mysqli_errno($this->link_id);
             $this->error = @mysqli_error($this->link_id);
             throw new Exception($this->error, $this->errno);
@@ -165,7 +165,7 @@ class Mysql7
     {
         $all_params = func_get_args();
         if (empty($arr)) {
-            $this->log('insert no valid field to insert, params:' . print_r($all_params, true), true);
+//            $this->log('insert no valid field to insert, params:' . print_r($all_params, true), true);
             return false;
         }
         $t_arr = array();
@@ -180,7 +180,7 @@ class Mysql7
         }
         $arr = $t_arr;
         if (empty($arr)) {
-            $this->log('insert no valid field to insert, params:' . print_r($all_params, true), true);
+//            $this->log('insert no valid field to insert, params:' . print_r($all_params, true), true);
             return false;
         }
 
@@ -209,7 +209,7 @@ class Mysql7
     {
         $all_params = func_get_args();
         if (empty($arr)) {
-            $this->log('insert no valid field to insert, params:' . print_r($all_params, true), true);
+//            $this->log('insert no valid field to insert, params:' . print_r($all_params, true), true);
             return false;
         }
         $t_arr = array();
@@ -224,7 +224,7 @@ class Mysql7
         }
         $arr = $t_arr;
         if (empty($arr)) {
-            $this->log('insert no valid field to insert, params:' . print_r($all_params, true), true);
+//            $this->log('insert no valid field to insert, params:' . print_r($all_params, true), true);
             return false;
         }
 
@@ -255,7 +255,7 @@ class Mysql7
     {
         $all_params = func_get_args();
         if (empty($arr)) {
-            $this->log('update no valid field to update, params:' . print_r($all_params, true), true);
+//            $this->log('update no valid field to update, params:' . print_r($all_params, true), true);
             return false;
         }
         $t_arr = array();
@@ -270,7 +270,7 @@ class Mysql7
         }
         $arr = $t_arr;
         if (empty($arr)) {
-            $this->log('update no valid field to update, params:' . print_r($all_params, true), true);
+//            $this->log('update no valid field to update, params:' . print_r($all_params, true), true);
             return false;
         }
 
@@ -305,7 +305,7 @@ class Mysql7
     {
         $all_params = func_get_args();
         if (empty($arr)) {
-            $this->log('update no valid field to update, params:' . print_r($all_params, true), true);
+//            $this->log('update no valid field to update, params:' . print_r($all_params, true), true);
             return false;
         }
         $t_arr = array();
@@ -320,7 +320,7 @@ class Mysql7
         }
         $arr = $t_arr;
         if (empty($arr)) {
-            $this->log('update no valid field to update, params:' . print_r($all_params, true), true);
+//            $this->log('update no valid field to update, params:' . print_r($all_params, true), true);
             return false;
         }
 
@@ -367,8 +367,8 @@ class Mysql7
                 $params[$key] = $this->prepare_param($value);
             }
             $string = vsprintf($string, $params);
-            if ($string == false)
-                $this->log('Invalid sprintf: ' . $string . "\n" . 'Arguments: ' . implode(', ', $params), true);
+            if ($string == false);
+//                $this->log('Invalid sprintf: ' . $string . "\n" . 'Arguments: ' . implode(', ', $params), true);
         }
         $timing = microtime(true);
         $id = $this->execute($string, $this->link_id);
@@ -397,14 +397,14 @@ class Mysql7
     function execute($sql)
     {
         $this->connect();
-        $this->log("SQL Query: {$sql}");
+//        $this->log("SQL Query: {$sql}");
         if (strpos($sql, "shop_id=0") !== false) {
             $arr = debug_backtrace();
-            //$this->log("SQL Query stack:".print_r($arr,true));
+//            $this->log("SQL Query stack:".print_r($arr,true));
         }
         $result = @mysqli_query( $this->link_id,$sql);
         if ($result) return $result;
-        $this->log('SQL ERR: ' . $sql, true);
+//        $this->log('SQL ERR: ' . $sql, true);
 
         return false;
     }
@@ -500,20 +500,20 @@ class Mysql7
         return @mysqli_ping($this->link_id);
     }
 
-    function log($message, $is_err = false)
-    {
-        if ($this->link_id) {
-            if ($is_err) {
-                $this->errno = @mysqli_errno($this->link_id);
-                $this->error = @mysqli_error($this->link_id);
-                $message .= "\tNo: " . $this->errno . ' error:' . $this->error . "\n";
-                if ($GLOBALS['_CFG']['echo_mysql_error_msg']) {
-                    //echo "<p>{$message}</p>";
-                }
-            }
-            Log::LOG('sql.log', "{$message}");
-        }
-    }
+//    function log($message, $is_err = false)
+//    {
+//        if ($this->link_id) {
+//            if ($is_err) {
+//                $this->errno = @mysqli_errno($this->link_id);
+//                $this->error = @mysqli_error($this->link_id);
+//                $message .= "\tNo: " . $this->errno . ' error:' . $this->error . "\n";
+//                if ($GLOBALS['_CFG']['echo_mysql_error_msg']) {
+//                    //echo "<p>{$message}</p>";
+//                }
+//            }
+//            Log::LOG('sql.log', "{$message}");
+//        }
+//    }
 
     function errno()
     {

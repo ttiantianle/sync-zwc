@@ -12,7 +12,6 @@
  */
 namespace ttiantianle\sync;
 
-use ttiantianle\sync\Mysql;
 class Sync{
 
     private $link = null;
@@ -20,31 +19,39 @@ class Sync{
     public function __construct($dbConfig=[])
     {
        if ($config=$this->validateDbConfig($dbConfig)){
-           $this->link = new Mysql($config);
+           $this->link = new \ttiantianle\sync\Mysql($config);
        }
     }
 
-    public function addOneToNewDataBase($table='',$oldData=[],$keyMap=[],$primary=[]){
+    public function setDbConfig($dbConfig=[]){
+        if ($config=$this->validateDbConfig($dbConfig)){
+            $this->link = new Mysql($config);
+        }
+    }
+    public function addOneToNewDb($table='',$oldData=[],$keyMap=[],$primary=[]){
         if ($this->link===null){
             return Code::UNLINK;
         }
         $data = Tools::arrayExtract($oldData,$keyMap);
-        $where ='';
-        foreach ($primary as $v){
-            $where .= " ".$v."='".$data[$v]."' and";
-        }
-        $where = substr($where,0,-3);
-        $query = $this->link->query_result("select 1 from ".$table.' where '.$where);
-        if ($query){
-            return Code::HADEXISTS;
-        }else{
-            $res = $this->link->insert($data,$table);
-            if ($res){
-                return Code::SUCCESS;
-            }else{
-                return Code::SYNCERROR;
+        if (!empty($primary)){//如果没有条件，直接插入
+            $where ='';
+            foreach ($primary as $v){
+                $where .= " ".$keyMap[$v]."='".$oldData[$v]."' and";
+            }
+            $where = substr($where,0,-3);
+            $query = $this->link->query_result("select * from ".$table.' where '.$where);
+            if ($query){
+                return Code::HADEXISTS;
             }
         }
+
+        $res = $this->link->insert($data,$table);
+        if ($res){
+            return Code::SUCCESS;
+        }else{
+            return Code::SYNCERROR;
+        }
+
     }
 
     private function validateDbConfig($dbConfig=[]){
